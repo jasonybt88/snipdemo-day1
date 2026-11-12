@@ -39,3 +39,11 @@ git push origin main
 ## Deployment bundle
 
 `bundle/` is a generated-output submodule. Run `node scripts/build-bundle.mjs` to build it locally, or pass `--push` to publish its `bundle` branch and update the superproject pointer. See the script and CI workflows for the deployment pipeline.
+The bundle builder updates source submodules to their tracked tips, builds Angular, and writes only generated deployment files to the `bundle` submodule:
+
+```sh
+node scripts/build-bundle.mjs        # build and commit locally
+node scripts/build-bundle.mjs --push # also publish bundle and main pointers
+```
+
+It refuses dirty component or bundle worktrees, so local edits are never silently overwritten. A repeat run with unchanged inputs is a no-op.
