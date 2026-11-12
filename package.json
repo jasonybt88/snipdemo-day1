@@ -1,0 +1,8 @@
+{
+  "name": "snip-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run server.js"
+  }
+}
