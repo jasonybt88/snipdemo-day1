@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { copyFile, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const bundle = join(root, "bundle");
 const push = process.argv.slice(2).includes("--push");
+const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const sourceModules = [
   ["backend", "backend"],
   ["frontend", "frontend"],
@@ -16,7 +17,11 @@ const sourceModules = [
 
 function run(command, args, cwd = root) {
   console.log(`> ${command} ${args.join(" ")}`);
-  execFileSync(command, args, { cwd, stdio: "inherit" });
+  execFileSync(command, args, {
+    cwd,
+    stdio: "inherit",
+    shell: process.platform === "win32" && command.toLowerCase().endsWith(".cmd"),
+  });
 }
 
 function output(command, args, cwd = root) {
@@ -54,8 +59,8 @@ async function main() {
   }
 
   assertClean(bundle, "bundle");
-  run("npm", ["install", "--package-lock=false"], join(root, "frontend"));
-  run("npm", ["run", "build"], join(root, "frontend"));
+  run(npm, ["install", "--package-lock=false"], join(root, "frontend"));
+  run(npm, ["run", "build"], join(root, "frontend"));
 
   const frontendOutput = join(root, "frontend", "dist", "snip-frontend", "browser");
   const index = join(frontendOutput, "index.html");
