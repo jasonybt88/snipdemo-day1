@@ -40,7 +40,7 @@ function commitIfStaged(directory, message) {
     return false;
   } catch (error) {
     if (error.status !== 1) throw error;
-    run("git", ["commit", "-m", message], directory);
+    run("git", ["commit", "-m", message, "-m", "Co-authored-by: OpenBot <335604065+openbotgit[bot]@users.noreply.github.com>"], directory);
     return true;
   }
 }
