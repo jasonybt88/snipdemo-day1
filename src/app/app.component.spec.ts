@@ -47,10 +47,13 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     app.form.setValue('https://example.com');
 
-    app.submit();
+    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
+    const submitted = form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
+    expect(submitted).toBeFalse();
+    expect(linksService.create).toHaveBeenCalledOnceWith('https://example.com');
     expect(app.form.value).toBe('');
     expect(app.links()).toEqual([link]);
     expect(compiled.querySelector('tbody')?.textContent).toContain('a1B2c3');

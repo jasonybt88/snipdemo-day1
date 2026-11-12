@@ -5,7 +5,7 @@
       <p>Turn a long URL into a short, shareable link.</p>
     </header>
 
-    <form (ngSubmit)="submit()" novalidate>
+    <form (submit)="$event.preventDefault(); submit()" novalidate>
       <label for="url">URL to shorten</label>
       <div class="form-row">
         <input
